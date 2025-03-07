@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide6.QtGui import QPainter, QColor, QPen
 from PySide6.QtCore import Qt
 from chess_piece import Rook, Knight, Cannon, Pawn, Guard, Elephant, King
+from chess_game_mgr import ChessGameMgr
 
 class ChessBoard(QWidget):
     def __init__(self, parent=None):
@@ -12,6 +13,7 @@ class ChessBoard(QWidget):
         self.selected_piece = None
         self.row = 10
         self.col = 9
+        self.game_mgr = ChessGameMgr()
         # Print intersection points
         self.board_size = min(self.width(), self.height() - 40)
         self.cell_size =  self.board_size // 10
@@ -160,12 +162,16 @@ class ChessBoard(QWidget):
                     self.pieces.remove(clicked_piece)
                     if self.move_piece(self.selected_piece, (x, y)) == True:
                         print(f'吃掉对方棋子:{clicked_piece.name}, 移动选中的棋子到:{x},{y}')
+                        self.game_mgr.log_move(self.selected_piece, self.selected_piece.position, (x, y))
+                        self.game_mgr.switch_turn()
             else:
                 if self.move_piece(self.selected_piece, (x, y)) == True:
                     print(f'移动选中的棋子到:{x},{y}')
+                    self.game_mgr.log_move(self.selected_piece, self.selected_piece.position, (x, y))
+                    self.game_mgr.switch_turn()
             self.selected_piece = None
         else:
-            if clicked_piece and clicked_piece.color == "red":  # 假设红方先走
+            if clicked_piece and clicked_piece.color == self.game_mgr.turn:
                 self.selected_piece = clicked_piece
                 print(f'选中的棋子为:{self.selected_piece.name}')
             else:
