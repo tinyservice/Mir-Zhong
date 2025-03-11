@@ -197,23 +197,35 @@ class ChessBoard(QWidget):
         piece_class = piece_map[piece_name]
         print(f'color = {color}, piece_name = {piece_name} col = {col}')
         if move[2] == "进":
-            if color == 'red':
-                step = columns_red.index(move[3]) - col
-            else:
-                step = int(move[3]) - 1 - col
             direction = -1 if color == "red" else 1
-            print(f'进step = {step}, direction = {direction}')
             for piece in self.pieces:
                 if isinstance(piece, piece_class) and piece.color == color and piece.position[0] == col:
                     if piece_name in ["車", "车", "砲", "炮", "兵", "卒", "帅", "将"]:
+                        if color == 'red':
+                            step = 9 - columns_red.index(move[3])
+                        else:
+                            step = int(move[3])
+                        print(f'进step = {step}, direction = {direction}')
                         new_position = (piece.position[0], piece.position[1] + step * direction)
-                    elif piece_name in ["馬", "马"]:
-                        new_position = (piece.position[0] + step, piece.position[1] + int(2 / abs(step)) * direction)
-                    elif piece_name in ["仕", "士"]:
-                        new_position = (piece.position[0] + step, piece.position[1] + 1 * direction)
-                    elif piece_name in ["相", "象"]:
-                        new_position = (piece.position[0] + step, piece.position[1] + 2 * direction)
+                    else :
+                        if color == 'red':
+                            step = columns_red.index(move[3]) - col
+                        else:
+                            step = int(move[3]) - 1 - col
+                        if piece_name in ["馬", "马"]:
+                            new_position = (piece.position[0] + step, piece.position[1] + int(2 / abs(step)) * direction)
+                        elif piece_name in ["仕", "士"]:
+                            new_position = (piece.position[0] + step, piece.position[1] + 1 * direction)
+                        elif piece_name in ["相", "象"]:
+                            new_position = (piece.position[0] + step, piece.position[1] + 2 * direction)
                     print(f'进new_position = {new_position}')
+                    clicked_piece = None
+                    for cpiece in self.pieces:
+                        if cpiece.position == new_position:
+                            clicked_piece = cpiece
+                            break
+                    if clicked_piece:
+                        self.pieces.remove(clicked_piece)
                     self.move_piece(piece, new_position)
                     break
         elif move[2] == "平":
@@ -221,26 +233,45 @@ class ChessBoard(QWidget):
             for piece in self.pieces:
                 if isinstance(piece, piece_class) and piece.color == color and piece.position[0] == col:
                     new_position = (new_col, piece.position[1])
+                    clicked_piece = None
+                    for cpiece in self.pieces:
+                        if cpiece.position == new_position:
+                            clicked_piece = cpiece
+                            break
+                    if clicked_piece:
+                        self.pieces.remove(clicked_piece)
                     self.move_piece(piece, new_position)
                     break
         elif move[2] == "退":
-            if color == 'red':
-                step = columns_red.index(move[3]) - col
-            else:
-                step = int(move[3]) - 1 - col
             direction = 1 if color == "red" else -1
-            print(f'退step = {step}, direction = {direction}')
             for piece in self.pieces:
                 if isinstance(piece, piece_class) and piece.color == color and piece.position[0] == col:
                     if piece_name in ["車", "车", "砲", "炮", "兵", "卒", "帅", "将"]:
+                        if color == 'red':
+                            step = 9 - columns_red.index(move[3])
+                        else:
+                            step = int(move[3])
+                        print(f'退step = {step}, direction = {direction}')
                         new_position = (piece.position[0], piece.position[1] - step * direction)
-                    elif piece_name in ["馬", "马"]:
-                        new_position = (piece.position[0] + step, piece.position[1] - 2 / abs(step) * direction)
-                    elif piece_name in ["仕", "士"]:
-                        new_position = (piece.position[0] + step, piece.position[1] - 1 * direction)
-                    elif piece_name in ["相", "象"]:
-                        new_position = (piece.position[0] + step, piece.position[1] - 2 * direction)
+                    else:
+                        if color == 'red':
+                            step = columns_red.index(move[3]) - col
+                        else:
+                            step = int(move[3]) - 1 - col
+                        if piece_name in ["馬", "马"]:
+                            new_position = (piece.position[0] + step, piece.position[1] - 2 / abs(step) * direction)
+                        elif piece_name in ["仕", "士"]:
+                            new_position = (piece.position[0] + step, piece.position[1] - 1 * direction)
+                        elif piece_name in ["相", "象"]:
+                            new_position = (piece.position[0] + step, piece.position[1] - 2 * direction)
                     print(f'退new_position = {new_position}')
+                    clicked_piece = None
+                    for cpiece in self.pieces:
+                        if cpiece.position == new_position:
+                            clicked_piece = cpiece
+                            break
+                    if clicked_piece:
+                        self.pieces.remove(clicked_piece)
                     self.move_piece(piece, new_position)
                     break
 
