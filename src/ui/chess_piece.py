@@ -49,7 +49,6 @@ class Knight(ChessPiece):
             (2, 1, 1, 0), (2, -1, 1, 0), (-2, 1, -1, 0), (-2, -1, -1, 0),
             (1, 2, 0, 1), (1, -2, 0, -1), (-1, 2, 0, 1), (-1, -2, 0, -1)
         ]
-        board.log_board()
         for move in knight_moves:
             new_x, new_y, block_x, block_y = x + move[0], y + move[1], x + move[2], y + move[3]
             if 0 <= new_x < board.col and 0 <= new_y < board.row:
@@ -92,15 +91,14 @@ class Pawn(ChessPiece):
 
         if self.color == 'red':
             if y < 5:  # Before crossing the river
-                directions = [(0, 1)]  # Move forward
-            else:  # After crossing the river
-                directions = [(0, 1), (1, 0), (-1, 0)]  # Move forward, left, right
-        else:  # Black pawn
-            if y > 4:  # Before crossing the river
                 directions = [(0, -1)]  # Move forward
             else:  # After crossing the river
                 directions = [(0, -1), (1, 0), (-1, 0)]  # Move forward, left, right
-
+        else:  # Black pawn
+            if y > 4:  # Before crossing the river
+                directions = [(0, 1)]  # Move forward
+            else:  # After crossing the river
+                directions = [(0, 1), (1, 0), (-1, 0)]  # Move forward, left, right
         for direction in directions:
             new_x, new_y = x + direction[0], y + direction[1]
             if 0 <= new_x < board.col and 0 <= new_y < board.row:
@@ -118,16 +116,14 @@ class Guard(ChessPiece):
 
         for direction in directions:
             new_x, new_y = x + direction[0], y + direction[1]
-            if self.color == 'red':
+            if self.color == 'black':
                 if 3 <= new_x <= 5 and 0 <= new_y <= 2:  # Red guard's palace area
                     if board.intersections[new_x * board.row + new_y][4] is None or board.intersections[new_x * board.row + new_y][4] != self.color:
                         moves.append((new_x, new_y))
-                        print(f'red Guard can move to {new_x, new_y}')
             else:  # Black guard
                 if 3 <= new_x <= 5 and 7 <= new_y <= 9:  # Black guard's palace area
                     if board.intersections[new_x * board.row + new_y][4] is None or board.intersections[new_x * board.row + new_y][4] != self.color:
                         moves.append((new_x, new_y))
-                        print(f'black Guard can move to {new_x, new_y}')
 
         return moves
 
@@ -140,7 +136,7 @@ class Elephant(ChessPiece):
 
         for direction in directions:
             new_x, new_y, block_x, block_y = x + direction[0], y + direction[1], x + direction[2], y + direction[3]
-            if self.color == 'red':
+            if self.color == 'black':
                 if 0 <= new_x <= 8 and 0 <= new_y <= 4:  # Red elephant's area
                     if board.intersections[block_x * board.row + block_y][4] is None:  # Check if the elephant eye is blocked
                         if board.intersections[new_x * board.row + new_y][4] is None or board.intersections[new_x * board.row + new_y][4] != self.color:
@@ -162,7 +158,7 @@ class King(ChessPiece):
 
         for direction in directions:
             new_x, new_y = x + direction[0], y + direction[1]
-            if self.color == 'red':
+            if self.color == 'black':
                 if 3 <= new_x <= 5 and 0 <= new_y <= 2:  # Red king's palace area
                     if board.intersections[new_x * board.row + new_y][4] is None or board.intersections[new_x * board.row + new_y][4] != self.color:
                         moves.append((new_x, new_y))
